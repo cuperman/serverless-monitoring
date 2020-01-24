@@ -1,0 +1,23 @@
+{
+    "name": "inventory-backend",
+    "version": "0.1.0",
+    "private": true,
+    "main": "index.js",
+    "scripts": {
+        "clean": "rm -rf build",
+        "build": "tsc && cp package.json build && npm install --only production --prefix build",
+        "watch": "tsc -w",
+        "test": "jest"
+    },
+    "devDependencies": {
+        "@types/jest": "^24.9.1",
+        "@types/node": "^13.5.0",
+        "jest": "^25.1.0",
+        "ts-jest": "^25.0.0",
+        "ts-node": "^8.6.2",
+        "typescript": "^3.7.5"
+    },
+    "dependencies": {
+        "@types/aws-lambda": "^8.10.40"
+    }
+}
