@@ -53,14 +53,14 @@ function mockEvent(overrides: any = {}) {
     return Object.assign({}, defaults, overrides);
 }
 
-describe('index.handler', () => {
+describe('index.getHandler', () => {
     it('returns status code 200', async () => {
-        const result = await index.handler(mockEvent());
+        const result = await index.getHandler(mockEvent());
         expect(result.statusCode).toEqual(200);
     });
 
     it('returns event data', async () => {
-        const result = await index.handler(
+        const result = await index.getHandler(
             mockEvent({
                 path: '/foo/bar'
             })
