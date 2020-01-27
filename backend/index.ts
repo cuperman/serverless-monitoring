@@ -1,3 +1,4 @@
+import * as AWSXRay from 'aws-xray-sdk';
 import * as AWS from 'aws-sdk';
 import * as uuid from 'uuid/v4';
 
@@ -6,6 +7,10 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 const INVENTORY_TABLE = process.env.INVENTORY_TABLE || '';
 
 const documentClient = new AWS.DynamoDB.DocumentClient();
+
+// FIXME: DocumentClient does not expose service attribute
+//   https://github.com/aws/aws-sdk-js/issues/1846
+AWSXRay.captureAWSClient((documentClient as any).service);
 
 function responseHeaders(headers: { [name: string]: string } = {}) {
     const defaultHeaders = {
