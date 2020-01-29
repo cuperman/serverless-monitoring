@@ -2,7 +2,6 @@ import * as AWS from 'aws-sdk';
 import * as uuid from 'uuid/v4';
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 
 const INVENTORY_TABLE = process.env.INVENTORY_TABLE || '';
 
