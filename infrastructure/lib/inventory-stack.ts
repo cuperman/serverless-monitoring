@@ -9,6 +9,7 @@ import * as cloudfront from '@aws-cdk/aws-cloudfront';
 
 export class InventoryStack extends cdk.Stack {
     public inventoryTable: dynamodb.Table;
+    public preflightHandler: lambda.Function;
     public listHandler: lambda.Function;
     public getHandler: lambda.Function;
     public createHandler: lambda.Function;
@@ -32,6 +33,12 @@ export class InventoryStack extends cdk.Stack {
         const handlerCode = lambda.Code.fromAsset(
             path.join(__dirname, '../../backend/build')
         );
+
+        this.preflightHandler = new lambda.Function(this, 'PreflightHandler', {
+            runtime: lambda.Runtime.NODEJS_12_X,
+            code: handlerCode,
+            handler: 'index.preflightHandler'
+        });
 
         this.createHandler = new lambda.Function(this, 'CreateHandler', {
             runtime: lambda.Runtime.NODEJS_12_X,
@@ -79,6 +86,10 @@ export class InventoryStack extends cdk.Stack {
 
         const collectionResource = this.restApi.root.addResource('inventory');
         collectionResource.addMethod(
+            'OPTIONS',
+            new apigw.LambdaIntegration(this.preflightHandler)
+        );
+        collectionResource.addMethod(
             'POST',
             new apigw.LambdaIntegration(this.createHandler)
         );
@@ -88,6 +99,10 @@ export class InventoryStack extends cdk.Stack {
         );
 
         const memberResource = collectionResource.addResource('{id}');
+        memberResource.addMethod(
+            'OPTIONS',
+            new apigw.LambdaIntegration(this.preflightHandler)
+        );
         memberResource.addMethod(
             'GET',
             new apigw.LambdaIntegration(this.getHandler)
