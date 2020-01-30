@@ -46,7 +46,8 @@ export class InventoryStack extends cdk.Stack {
             handler: 'index.createHandler',
             environment: {
                 INVENTORY_TABLE: this.inventoryTable.tableName
-            }
+            },
+            tracing: lambda.Tracing.ACTIVE
         });
         this.inventoryTable.grantReadWriteData(this.createHandler);
 
@@ -56,7 +57,8 @@ export class InventoryStack extends cdk.Stack {
             handler: 'index.listHandler',
             environment: {
                 INVENTORY_TABLE: this.inventoryTable.tableName
-            }
+            },
+            tracing: lambda.Tracing.ACTIVE
         });
         this.inventoryTable.grantReadData(this.listHandler);
 
@@ -66,7 +68,8 @@ export class InventoryStack extends cdk.Stack {
             handler: 'index.getHandler',
             environment: {
                 INVENTORY_TABLE: this.inventoryTable.tableName
-            }
+            },
+            tracing: lambda.Tracing.ACTIVE
         });
         this.inventoryTable.grantReadData(this.getHandler);
 
@@ -76,12 +79,16 @@ export class InventoryStack extends cdk.Stack {
             handler: 'index.deleteHandler',
             environment: {
                 INVENTORY_TABLE: this.inventoryTable.tableName
-            }
+            },
+            tracing: lambda.Tracing.ACTIVE
         });
         this.inventoryTable.grantReadWriteData(this.deleteHandler);
 
         this.restApi = new apigw.RestApi(this, 'RestApi', {
-            restApiName: 'InventoryRestApi'
+            restApiName: 'InventoryRestApi',
+            deployOptions: {
+                tracingEnabled: true
+            }
         });
 
         const collectionResource = this.restApi.root.addResource('inventory');
